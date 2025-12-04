@@ -60,28 +60,38 @@ class StdFile
 public:
 	static inline uint64_t read_file_content(const char* filename, std::string& content)
 	{
-		FILE* f = fopen(filename, "rb");
-		fseek(f, 0, SEEK_END);
-		uint32_t length = ftell(f);
-		content.resize(length);   // allocate memory for a buffer of appropriate dimension
-		fseek(f, 0, 0);
-		fread((void*)content.data(), sizeof(char), length, f);
-		fclose(f);
-		return length;
+		FILE* f = NULL;
+        errno_t err = fopen_s(&f, filename, "rb");
+        if (err == 0 && f != NULL) {
+            fseek(f, 0, SEEK_END);
+            uint32_t length = ftell(f);
+            content.resize(length);   // allocate memory for a buffer of appropriate dimension
+            fseek(f, 0, 0);
+            fread((void*)content.data(), sizeof(char), length, f);
+            fclose(f);
+            return length;
+        }
+		return 0;
 	}
 
 	static inline void write_file_content(const char* filename, const std::string& content)
 	{
-		FILE* f = fopen(filename, "wb");
-		fwrite((void*)content.data(), sizeof(char), content.size(), f);
-		fclose(f);
+		FILE* f = NULL;
+		errno_t err = fopen_s(&f, filename, "wb");
+		if (err == 0 && f != NULL) {
+			fwrite((void*)content.data(), sizeof(char), content.size(), f);
+			fclose(f);
+        }
 	}
 
 	static inline void write_file_content(const char* filename, const void* data, std::size_t length)
 	{
-		FILE* f = fopen(filename, "wb");
-		fwrite(data, sizeof(char), length, f);
-		fclose(f);
+        FILE* f = NULL;
+        errno_t err = fopen_s(&f, filename, "wb");
+        if (err == 0 && f != NULL) {
+            fwrite(data, sizeof(char), length, f);
+            fclose(f);
+        }
 	}
 
 	static inline bool exists(const char* filename)

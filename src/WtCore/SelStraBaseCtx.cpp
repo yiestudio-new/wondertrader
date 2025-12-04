@@ -219,12 +219,24 @@ void SelStraBaseCtx::load_userdata()
 	if (root.HasParseError())
 		return;
 
+#ifdef GetObject
+	// see https://github.com/Tencent/rapidjson/issues/1448
+	// a former included windows.h might have defined a macro called GetObject, which affects
+	// GetObject defined here. This ensures the macro does not get applied
+#pragma push_macro("GetObject")
+#define RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#undef GetObject
+#endif
 	for (auto& m : root.GetObject())
 	{
 		const char* key = m.name.GetString();
 		const char* val = m.value.GetString();
 		_user_datas[key] = val;
 	}
+#ifdef RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#pragma pop_macro("GetObject")
+#undef RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#endif
 }
 
 void SelStraBaseCtx::load_data(uint32_t flag /* = 0xFFFFFFFF */)
@@ -352,6 +364,14 @@ void SelStraBaseCtx::load_data(uint32_t flag /* = 0xFFFFFFFF */)
 		const rj::Value& jSignals = root["signals"];
 		if (!jSignals.IsNull() && jSignals.IsObject())
 		{
+#ifdef GetObject
+			// see https://github.com/Tencent/rapidjson/issues/1448
+			// a former included windows.h might have defined a macro called GetObject, which affects
+			// GetObject defined here. This ensures the macro does not get applied
+#pragma push_macro("GetObject")
+#define RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#undef GetObject
+#endif
 			for (auto& m : jSignals.GetObject())
 			{
 				const char* stdCode = m.name.GetString();
@@ -373,6 +393,10 @@ void SelStraBaseCtx::load_data(uint32_t flag /* = 0xFFFFFFFF */)
 				log_info("{} untouched signal recovered, target pos: {}", stdCode, sInfo._volume);
 				stra_sub_ticks(stdCode);
 			}
+#ifdef RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#pragma pop_macro("GetObject")
+#undef RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#endif
 		}
 	}
 }

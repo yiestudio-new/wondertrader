@@ -1355,9 +1355,9 @@ int TraderATP::queryOrders()
 			{
 				write_log(_sink, LL_ERROR, "[TraderATP][{}] Query orders failed: {}", _acctid, ec);
 			}
-			write_log(_sink, LL_INFO, "return num: {}", _return_nums);
+			write_log(_sink, LL_INFO, "return num: {}", (int64_t)_return_nums);
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			write_log(_sink, LL_INFO, "return num: {}", _return_nums);
+			write_log(_sink, LL_INFO, "return num: {}", (int64_t)_return_nums);
 
 			if (_return_nums > 100)
 			{
@@ -1405,9 +1405,9 @@ int TraderATP::queryTrades()
 			{
 				write_log(_sink, LL_ERROR, "[TraderATP][{}] Query trades failed: {}", _acctid, ec);
 			}
-			write_log(_sink, LL_INFO, "return num: {}", _return_nums);
+			write_log(_sink, LL_INFO, "return num: {}", (int64_t)_return_nums);
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			write_log(_sink, LL_INFO, "return num: {}", _return_nums);
+			write_log(_sink, LL_INFO, "return num: {}", (int64_t)_return_nums);
 
 			if (_return_nums > 100)
 			{

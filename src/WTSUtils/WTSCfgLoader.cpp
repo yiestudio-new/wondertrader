@@ -19,6 +19,14 @@ bool json_to_variant(const rj::Value& root, WTSVariant* params)
 
 	if (root.IsObject())
 	{
+#ifdef GetObject
+		// see https://github.com/Tencent/rapidjson/issues/1448
+		// a former included windows.h might have defined a macro called GetObject, which affects
+		// GetObject defined here. This ensures the macro does not get applied
+#pragma push_macro("GetObject")
+#define RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#undef GetObject
+#endif
 		for (auto& m : root.GetObject())
 		{
 			const char* key = m.name.GetString();
@@ -61,6 +69,10 @@ bool json_to_variant(const rj::Value& root, WTSVariant* params)
 
 			}
 		}
+#ifdef RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#pragma pop_macro("GetObject")
+#undef RAPIDJSON_WINDOWS_GETOBJECT_WORKAROUND_APPLIED
+#endif
 	}
 	else
 	{
