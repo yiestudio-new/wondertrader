@@ -1,0 +1,11 @@
+{
+  "name": "wondertrader",
+  "version-string": "0.9.9",
+  "builtin-baseline" : "4c4abc2e8727221ede31021349386dac674309b0",
+  "dependencies": [
+    { "name": "rapidjson" },
+    { "name": "fmt" },
+    { "name": "spdlog" },
+    { "name": "nanomsg" }
+  ]
+}
